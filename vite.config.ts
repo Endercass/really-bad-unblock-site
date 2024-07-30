@@ -1,6 +1,11 @@
-import { defineConfig } from 'vite';
-import { dreamlandPlugin } from 'vite-plugin-dreamland';
+import { defineConfig } from "vite";
+import { dreamlandPlugin } from "vite-plugin-dreamland";
 
 export default defineConfig({
-    plugins: [dreamlandPlugin()]
+    server: {
+        hmr: {
+            path: "vite-hmr",
+        },
+    },
+    plugins: [dreamlandPlugin()],
 });

@@ -1,24 +1,35 @@
 {
-  "name": "create-dreamland-app",
-  "version": "0.0.0",
-  "private": true,
-  "type": "module",
-  "scripts": {
-    "build": "tsc && vite build",
-    "dev": "vite",
-    "preview": "vite preview"
-  },
-  "dependencies": {
-    "dreamland": "^0.0.22",
-    "dreamland-router": "https://github.com/mercuryworkshop/dreamland-router",
-    "rollup-plugin-typescript2": "^0.36.0",
-    "vite-plugin-dreamland": "^1.2.0"
-  },
-  "devDependencies": {
-    "@eslint/js": "^9.2.0",
-    "eslint": "^9.2.0",
-    "prettier": "^3.2.5",
-    "typescript": "^5.4.5",
-    "vite": "^5.2.11"
-  }
+    "name": "create-dreamland-app",
+    "version": "0.0.0",
+    "private": true,
+    "type": "module",
+    "scripts": {
+        "start": "NODE_ENV=production node server.js",
+        "build": "tsc && vite build",
+        "dev": "node server.js",
+        "preview": "vite preview",
+        "install": "git submodule update --init && cd node_modules/dreamland-router && npm install && cd ../../giggleshitter-public && cargo build --release && cd .."
+    },
+    "dependencies": {
+        "@catppuccin/palette": "^1.2.0",
+        "@fontsource/iosevka": "^5.0.11",
+        "@fontsource/lexend": "^5.0.20",
+        "@mercuryworkshop/bare-mux": "^2.0.4",
+        "@mercuryworkshop/epoxy-transport": "^2.1.5",
+        "@mercuryworkshop/libcurl-transport": "^1.3.7",
+        "@titaniumnetwork-dev/ultraviolet": "^3.2.6",
+        "dreamland": "^0.0.24",
+        "dreamland-router": "github:mercuryworkshop/dreamland-router",
+        "express": "^4.19.2",
+        "nodemon": "^3.1.4",
+        "rollup-plugin-typescript2": "^0.36.0",
+        "vite-express": "^0.17.0",
+        "vite-plugin-dreamland": "^1.2.0",
+        "wisp-server-node": "^1.1.3"
+    },
+    "devDependencies": {
+        "prettier": "^3.2.5",
+        "typescript": "^5.5.2",
+        "vite": "^5.2.11"
+    }
 }
