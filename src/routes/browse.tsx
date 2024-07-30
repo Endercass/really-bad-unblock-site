@@ -31,18 +31,6 @@ const Browser: Component<
     this.url = "https://google.com";
     this.commitedUrl = this.url;
 
-    const frameUnloadHandler = () => {
-        setTimeout(() => {
-            const proxyUrl = this.frame.contentWindow?.location.href;
-            if (proxyUrl) {
-                const url = new URL(proxyUrl);
-                const path = decodeURIComponent(url.pathname.split("/").pop()!);
-                const decoded = (globalThis as any).__uv$config.decodeUrl(path);
-                this.url = decoded;
-            }
-        }, 0);
-    };
-
     this.mount = () => {
         $("#web-manifest")?.setAttribute("href", "/browse/manifest.json");
         if (!navigator.serviceWorker) {
@@ -65,18 +53,7 @@ const Browser: Component<
             </button>
 
             <iframe
-                // src="/service/hvtrs8%2F-wuw%2Cgmoelg.aoo%2F"
                 bind:this={use(this.frame)}
-                on:load={() => {
-                    this.frame.contentWindow?.removeEventListener(
-                        "unload",
-                        frameUnloadHandler,
-                    );
-                    this.frame.contentWindow?.addEventListener(
-                        "unload",
-                        frameUnloadHandler,
-                    );
-                }}
                 src={use(this.commitedUrl, (val) => {
                     const xorKey = [0x0, 0x2];
                     // decode with xor key above
