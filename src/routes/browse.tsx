@@ -63,7 +63,7 @@ const Browser: Component<
 
                     const xorKey = [0x0, 0x2];
                     // decode with xor key above
-                    return (
+                    this.commitedUrl =
                         "/service/" +
                         this.url
                             .split("")
@@ -73,8 +73,7 @@ const Browser: Component<
                                         xorKey[i % xorKey.length],
                                 ),
                             )
-                            .join("")
-                    );
+                            .join("");
                 }}
             >
                 Go
