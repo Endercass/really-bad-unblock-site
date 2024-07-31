@@ -59,21 +59,21 @@ const Browser: Component<
                         ).then((res) => res.json());
                         console.log("ENCODED URL", encodedUrl);
                         this.commitedUrl = encodedUrl.encoded_url;
+                    } else {
+                        const xorKey = [0x0, 0x2];
+                        // decode with xor key above
+                        this.commitedUrl =
+                            "/service/" +
+                            this.url
+                                .split("")
+                                .map((char, i) =>
+                                    String.fromCharCode(
+                                        char.charCodeAt(0) ^
+                                            xorKey[i % xorKey.length],
+                                    ),
+                                )
+                                .join("");
                     }
-
-                    const xorKey = [0x0, 0x2];
-                    // decode with xor key above
-                    this.commitedUrl =
-                        "/service/" +
-                        this.url
-                            .split("")
-                            .map((char, i) =>
-                                String.fromCharCode(
-                                    char.charCodeAt(0) ^
-                                        xorKey[i % xorKey.length],
-                                ),
-                            )
-                            .join("");
                 }}
             >
                 Go
