@@ -1,4 +1,27 @@
 import "dreamland/dev";
+
+declare global {
+    // eslint-disable-next-line no-var
+    var userSettings: Stateful<{
+        theme: Stateful<Theme>;
+        transport: "epoxy" | "libcurl";
+        usegiggleshitter: boolean;
+    }>;
+}
+
+globalThis.userSettings = $store(
+    {
+        theme: $state(mochaTheme),
+        transport: "epoxy",
+        usegiggleshitter: false,
+    },
+    {
+        ident: "userSettings",
+        autosave: "auto",
+        backing: "localstorage",
+    },
+);
+
 import "@fontsource/lexend";
 import "@fontsource/iosevka";
 import { ColorName } from "@catppuccin/palette";
@@ -10,26 +33,6 @@ import Router from "./router";
 import { mochaTheme, Theme } from "./theme/Themes";
 
 const connection = new BareMuxConnection("/baremux/worker.js");
-
-declare global {
-    // eslint-disable-next-line no-var
-    var userSettings: Stateful<{
-        theme: Stateful<Theme>;
-        transport: "epoxy" | "libcurl";
-    }>;
-}
-
-globalThis.userSettings = $store(
-    {
-        theme: $state(mochaTheme),
-        transport: "epoxy",
-    },
-    {
-        ident: "userSettings",
-        autosave: "auto",
-        backing: "localstorage",
-    },
-);
 
 for (const color in userSettings.theme) {
     useChange(use(userSettings.theme[color as ColorName]), (val) => {
@@ -51,10 +54,6 @@ const App: Component<{}, {}> = function () {
     return <div class={base} id="app" />;
 };
 
-window.addEventListener("load", () => {
-    document.getElementById("app")!.replaceWith(<App />);
-});
-
 async function registerSW() {
     let wisp =
         (location.protocol === "https:" ? "wss" : "ws") +
@@ -62,7 +61,7 @@ async function registerSW() {
         location.host +
         "/wisp/";
 
-    // await SetTransport(userSettings.t, { wisp });
+    await connection.setTransport("/epoxy/index.mjs", [{ wisp }]);
     useChange(use(userSettings.transport), async (val) => {
         try {
             await connection.setTransport(`/${val}/index.mjs`, [{ wisp }]);
@@ -76,4 +75,7 @@ async function registerSW() {
     await navigator.serviceWorker.register("/sw.js");
 }
 
-registerSW();
+window.addEventListener("load", async () => {
+    await registerSW();
+    document.getElementById("app")!.replaceWith(<App />);
+});

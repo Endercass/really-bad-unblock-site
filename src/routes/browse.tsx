@@ -29,7 +29,6 @@ const Browser: Component<
 > = function () {
     this.counter = 0;
     this.url = "https://google.com";
-    this.commitedUrl = this.url;
 
     this.mount = () => {
         $("#web-manifest")?.setAttribute("href", "/browse/manifest.json");
@@ -45,21 +44,28 @@ const Browser: Component<
             {/* <h1 class={title}>Dreamland.js</h1> */}
             <input type="text" bind:value={use(this.url)} />
             <button
-                onclick={() => {
-                    this.commitedUrl = this.url;
-                }}
-            >
-                Go
-            </button>
+                id="go"
+                on:click={async () => {
+                    if (userSettings.usegiggleshitter) {
+                        const encodedUrl = await fetch(
+                            "https://api." + location.host + "/encode",
+                            {
+                                method: "POST",
+                                headers: {
+                                    "Content-Type": "application/json",
+                                },
+                                body: JSON.stringify({ url: this.url }),
+                            },
+                        ).then((res) => res.json());
+                        console.log("ENCODED URL", encodedUrl);
+                        this.commitedUrl = encodedUrl.encoded_url;
+                    }
 
-            <iframe
-                bind:this={use(this.frame)}
-                src={use(this.commitedUrl, (val) => {
                     const xorKey = [0x0, 0x2];
                     // decode with xor key above
                     return (
                         "/service/" +
-                        val
+                        this.url
                             .split("")
                             .map((char, i) =>
                                 String.fromCharCode(
@@ -69,7 +75,33 @@ const Browser: Component<
                             )
                             .join("")
                     );
-                })}
+                }}
+            >
+                Go
+            </button>
+
+            <button
+                id="giggleshitter"
+                on:click={() => {
+                    userSettings.usegiggleshitter =
+                        !userSettings.usegiggleshitter;
+                    this.commitedUrl = this.commitedUrl;
+                    if (userSettings.usegiggleshitter) {
+                        console.log("GIGGLESHITTER ENABLED");
+                        $("#giggleshitter")?.setAttribute(
+                            "style",
+                            "color: red;",
+                        );
+                    }
+                }}
+            >
+                <img src="/sween.jpg" alt="SWEEN" />
+                TOGGLE SWEEN MODE (BASED CLCICKE ME EPEOLEEASE)
+            </button>
+
+            <iframe
+                bind:this={use(this.frame)}
+                src={use(this.commitedUrl)}
                 class={iframe}
             ></iframe>
         </div>
